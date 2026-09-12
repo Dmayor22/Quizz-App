@@ -2,7 +2,7 @@
 const score = document.getElementById("score");
 const question = document.getElementById("question");
 const quizOptions = document.querySelectorAll(".quiz_options button");
-const nextBtn = document.querySelector(".next_cta");
+const nextBtn = document.querySelector("#next_cta");
 
 // data
 const studentQuestions = [
@@ -20,27 +20,46 @@ const studentQuestions = [
 ];
 
 // set score
-const userScore = 0;
+let userScore = 0;
+let currentQuestion = 0;
 const totalScore = studentQuestions.length;
 
 // add score to display for user
-score.innerHTML = `Score: ${userScore} out of ${totalScore}`;
+function updateScore() {
+  score.innerHTML = `Score: ${userScore} out of ${totalScore}`;
+}
 
 // get and set question to UI
-const currentQuestion = 0;
-const getQuestion = studentQuestions[currentQuestion];
-question.innerHTML = `${getQuestion.id}. ${getQuestion.questions}`;
+function loadQuestion() {
+  // get current question
+  const getQuestion = studentQuestions[currentQuestion];
 
-// get and set options to UI
-const questionOptions = studentQuestions.map((quesOpt) => {
-  return quesOpt.options;
-});
+  // Display question
+  question.innerHTML = `${getQuestion.id}. ${getQuestion.questions}`;
 
-const getOptions = questionOptions[currentQuestion];
+  // get and set options to UI
+  const questionOptions = studentQuestions.map((quesOpt) => {
+    return quesOpt.options;
+  });
 
-quizOptions.forEach((optbtn, i) => {
-  optbtn.innerHTML = getOptions[i];
-});
+  const getOptions = questionOptions[currentQuestion];
+
+  quizOptions.forEach((optbtn, i) => {
+    optbtn.innerHTML = getOptions[i];
+
+    // Remove previous styles and enable btn
+    optbtn.classList.remove("correct");
+    optbtn.classList.remove("wrong");
+    optbtn.disabled = false;
+    optbtn.style.display = "block";
+  });
+
+  // Hide next button until an answer is selected
+  nextBtn.disabled = true;
+
+  updateScore();
+}
+loadQuestion();
 
 // set correct and wrong options
 const correctOpt = studentQuestions.map((answer) => {
@@ -50,15 +69,21 @@ const correctOpt = studentQuestions.map((answer) => {
 const correctAnswer = correctOpt[currentQuestion];
 
 // get user clicked option
-const userOption = quizOptions.forEach((useropt) => {
+quizOptions.forEach((useropt) => {
   useropt.addEventListener("click", () => {
+    const currentQuiz = studentQuestions[currentQuestion];
+    const correctAnswer = currentQuiz.correctOptions;
+    const selectedAnswer = useropt.textContent.trim();
+
+
+    
     if (correctAnswer === useropt.textContent) {
       useropt.classList.toggle("correct");
 
-
-      
+      updateScore();
     } else {
       useropt.classList.toggle("wrong");
+      useropt.classList.toggle("correct");
     }
   });
 });
