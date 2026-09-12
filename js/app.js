@@ -16,6 +16,7 @@ const studentQuestions = [
     id: 2,
     questions: "What is Your Naccccme?",
     options: ["A", "B", "C", "D"],
+    correctOptions: "A",
   },
 ];
 
@@ -38,11 +39,7 @@ function loadQuestion() {
   question.innerHTML = `${getQuestion.id}. ${getQuestion.questions}`;
 
   // get and set options to UI
-  const questionOptions = studentQuestions.map((quesOpt) => {
-    return quesOpt.options;
-  });
-
-  const getOptions = questionOptions[currentQuestion];
+  const getOptions = studentQuestions[currentQuestion].options;
 
   quizOptions.forEach((optbtn, i) => {
     optbtn.innerHTML = getOptions[i];
@@ -95,10 +92,7 @@ quizOptions.forEach((useropt) => {
   });
 });
 
-// =========================
 // NEXT QUESTION
-// =========================
-
 nextBtn.addEventListener("click", () => {
   currentQuestion++;
 
@@ -125,8 +119,6 @@ nextBtn.addEventListener("click", () => {
   }
 });
 
-// =========================
 // START QUIZ
-// =========================
 
 loadQuestion();
