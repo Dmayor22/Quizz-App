@@ -62,11 +62,6 @@ function loadQuestion() {
 loadQuestion();
 
 // set correct and wrong options
-const correctOpt = studentQuestions.map((answer) => {
-  return answer.correctOptions;
-});
-
-const correctAnswer = correctOpt[currentQuestion];
 
 // get user clicked option
 quizOptions.forEach((useropt) => {
@@ -75,15 +70,63 @@ quizOptions.forEach((useropt) => {
     const correctAnswer = currentQuiz.correctOptions;
     const selectedAnswer = useropt.textContent.trim();
 
+    // PREVENT MULTIPLE ANSWERS
+    // Disable all options after one click
+    quizOptions.forEach((option) => {
+      option.disabled = true;
+    });
 
-    
-    if (correctAnswer === useropt.textContent) {
-      useropt.classList.toggle("correct");
-
+    if (selectedAnswer === correctAnswer) {
+      useropt.classList.add("correct");
+      userScore++;
       updateScore();
     } else {
-      useropt.classList.toggle("wrong");
-      useropt.classList.toggle("correct");
+      useropt.classList.add("wrong");
+
+      quizOptions.forEach((option) => {
+        if (option.textContent.trim() === correctAnswer) {
+          option.classList.add("correct");
+        }
+      });
     }
+
+    // Enable Next button
+    nextBtn.disabled = false;
   });
 });
+
+// =========================
+// NEXT QUESTION
+// =========================
+
+nextBtn.addEventListener("click", () => {
+  currentQuestion++;
+
+  // Check if quiz is finished
+  if (currentQuestion < studentQuestions.length) {
+    loadQuestion();
+  } else {
+    // Quiz finished
+    question.innerHTML = `
+      Quiz Completed! 🎉
+    `;
+
+    score.innerHTML = `
+      Final Score: ${userScore} out of ${totalScore}
+    `;
+
+    // Hide options
+    quizOptions.forEach((option) => {
+      option.style.display = "none";
+    });
+
+    // Hide next button
+    nextBtn.style.display = "none";
+  }
+});
+
+// =========================
+// START QUIZ
+// =========================
+
+loadQuestion();
