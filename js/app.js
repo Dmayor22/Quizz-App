@@ -3,6 +3,7 @@ const score = document.getElementById("score");
 const question = document.getElementById("question");
 const quizOptions = document.querySelectorAll(".quiz_options button");
 const nextBtn = document.querySelector("#next_cta");
+const timer = document.querySelector("#timer");
 
 // data
 const studentQuestions = [
@@ -54,7 +55,8 @@ function loadQuestion() {
   // Hide next button until an answer is selected
   nextBtn.disabled = true;
 
-  updateScore();
+  resetTime();
+  updateTimer();
 }
 loadQuestion();
 
@@ -77,6 +79,7 @@ quizOptions.forEach((useropt) => {
       useropt.classList.add("correct");
       userScore++;
       updateScore();
+      stopTime();
     } else {
       useropt.classList.add("wrong");
 
@@ -85,6 +88,7 @@ quizOptions.forEach((useropt) => {
           option.classList.add("correct");
         }
       });
+      stopTime();
     }
 
     // Enable Next button
@@ -117,8 +121,37 @@ nextBtn.addEventListener("click", () => {
     // Hide next button
     nextBtn.style.display = "none";
   }
+
+  updateTimer();
 });
 
 // START QUIZ
 
 loadQuestion();
+
+function updateTimer() {
+  // set time
+  let time = 30;
+  setInterval(() => {
+    if (time === 0) {
+      stopTime();
+
+      resetTime();
+    } else {
+      time -= 1;
+
+      timer.textContent = time;
+    }
+
+    return time;
+  }, 1000);
+}
+
+function resetTime() {
+  const resetime = 30;
+  timer.textContent = resetime;
+}
+
+function stopTime() {
+  clearInterval();
+}
